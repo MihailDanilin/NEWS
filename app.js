@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", ()=>{//Инициализация 
 let http = myHTTP(); //Создание сервиса для обращения к API
 let service = () => {
   let apiKey = "7d8c59871fd54290a76606e1e358b3c6";
-  let baseURL = "https://newsapi.org/v2";
+  let baseURL = "http://newsapi.org/v2";
   return {
     everything(query, cb) {
       http.get(`${baseURL}/everything?q=${query}&apiKey=${apiKey}`, cb);
