@@ -79,21 +79,21 @@ function renderNews(news) {
 
   newsCont.insertAdjacentHTML("afterbegin", fragment);
 }
-function newsTemplate(news) {
+function newsTemplate({urlToImage, title, description, url}) {
   //Создание шаблона новости
   return `<div class="col s12">
   <div class="card">
     <div class="card-image">
-      <img src="${news.urlToImage || "news.jpg"}" />
+      <img src="${urlToImage || "news.jpg"}" />
     </div>
     <div class="card-content">
-     <span class="card-title">${news.title || "News"}</span>
+     <span class="card-title">${title || "News"}</span>
       <p>
-        ${news.description || "Learn more in the site"}
+        ${description || "Learn more in the site"}
       </p>
     </div>
     <div class="card-action">
-      <a target="_blank" href="${news.url}">Learn more</a>
+      <a target="_blank" href="${url}">Learn more</a>
     </div>
   </div>
 </div>`;
