@@ -1,0 +1,58 @@
+body{
+    margin: 0;
+}
+.header{
+    color: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.header h1{
+    margin:0;
+    font-size: 25px;
+}
+.card-form{
+    margin: 50px 80px;
+}
+.dropdown-content li>a, .dropdown-content li>span {
+    color: #7e57c2 ;
+}
+.dropdown-content{
+    top: -10px;
+}
+.select-wrapper input.select-dropdown:focus {
+    border-bottom: 1px solid #7e57c2;
+}
+input.valid[type=text]:not(.browser-default), 
+input.valid[type=text]:not(.browser-default):focus, 
+input[type=text]:not(.browser-default):focus:not([readonly]){
+    border-bottom: 1px solid #7e57c2;
+    box-shadow: 0 1px 0 0 #7e57c2;
+}
+input[type=text]:not(.browser-default):focus:not([readonly])+label{
+    color: #7e57c2;
+}
+.grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.card-action a{
+    color: #441f83 !important;
+}
+.preloader-wrapper{
+    margin: 0 auto;
+    display: block;
+}
+.custom-toast{
+    background: #7e57c2;
+    color: white;
+}
+
+@media screen and (max-width:764px){
+    .card-form{
+        margin: 30px 0;
+    }
+    .grid{
+        grid-template-columns: 1fr;
+    }
+}
