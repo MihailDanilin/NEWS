@@ -126,3 +126,14 @@ input[type=text]:not(.browser-default):focus:not([readonly])+label{
 .from-bottom:hover:after {
   height: 100%;
 }
+
+.favourite-modal{
+    width: 200px;
+    height: 300px;
+    background: rgb(255, 255, 255);
+    box-shadow: rgba(1, 4, 9, 0.2) 0px 8px 24px 0px;
+    position: fixed;
+    right: 166px;
+    top: 125px;
+    display: none;
+}

@@ -1,6 +1,9 @@
 import { myHTTP } from "./api.js";
 
 let newsCont = document.querySelector(".grid");
+let favourite = document.querySelector(".favourite")
+let modal = document.querySelector(".favourite-modal")
+let isOpen = false
 
 document.addEventListener("DOMContentLoaded", ()=>{//Инициализация селекта
   let elems = document.querySelectorAll("select");
@@ -123,3 +126,25 @@ function showAlert(err) {
   //Рендер окна ошибки
   M.toast({ html: err, classes: "custom-toast" });
 }
+
+// favourite.addEventListener("click", openFavouriteModal)
+// function openFavouriteModal(){
+//   modal.style.display = "flex"
+//   isOpen = true
+// }
+window.addEventListener("click", (event)=>{
+  if(!event.target.closest(".favourite-modal") && isOpen){
+    modal.classList.remove("animate__flipInX")
+    modal.classList.add("animate__flipOutX")
+    setTimeout(function(){
+      modal.style.display = "none"
+    },1000)
+    isOpen = false
+  }
+  if(event.target.classList.contains("favourite")){
+    modal.style.display = "flex"
+    modal.classList.add("animate__flipInX")
+    modal.classList.remove("animate__flipOutX")
+    isOpen = true
+  }
+})
