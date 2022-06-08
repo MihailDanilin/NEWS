@@ -133,7 +133,8 @@ input[type=text]:not(.browser-default):focus:not([readonly])+label{
     background: rgb(255, 255, 255);
     box-shadow: rgba(1, 4, 9, 0.2) 0px 8px 24px 0px;
     position: fixed;
-    left: 90px;
+    right: 50px;
+    left: unset!important;
     top: 125px!important;
     display: none;
     border: none!important;
@@ -158,4 +159,13 @@ input[type=text]:not(.browser-default):focus:not([readonly])+label{
     flex-wrap: wrap;
     padding: 10px;
     border-bottom: 1px solid rgba(53, 53, 53, 0.4);
+    outline: none;
+}
+.material-icons{
+    cursor:pointer;
+    transition: 0.7s;
+    
+}
+.material-icons:hover{
+    color: red;
 }
