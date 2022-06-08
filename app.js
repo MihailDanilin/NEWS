@@ -162,6 +162,6 @@ document.addEventListener('DOMContentLoaded', function() {
       modal.classList.add("animate__flipOutX")
     },
     inDuration:1000,
-    outDuration:1000
+    outDuration:1000,
   });
 });

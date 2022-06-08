@@ -128,7 +128,7 @@ input[type=text]:not(.browser-default):focus:not([readonly])+label{
 }
 
 .favourite-modal{
-    width: 200px!important;
+    width: 600px!important;
     height: 300px!important;
     background: rgb(255, 255, 255);
     box-shadow: rgba(1, 4, 9, 0.2) 0px 8px 24px 0px;
@@ -138,4 +138,24 @@ input[type=text]:not(.browser-default):focus:not([readonly])+label{
     display: none;
     border: none!important;
     outline: none!important;
+    z-index: 3;
+    overflow-y: auto;
+}
+.favourite-item h3{
+    font-size: 22px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+    margin: 10px 0px 20px 0px;
+}
+.favourite-item a{
+    font-size: 16px;
+    margin-right: 20px;
+}
+.favourite-item{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    border-bottom: 1px solid rgba(53, 53, 53, 0.4);
 }
