@@ -132,19 +132,36 @@ function showAlert(err) {
 //   modal.style.display = "flex"
 //   isOpen = true
 // }
-window.addEventListener("click", (event)=>{
-  if(!event.target.closest(".favourite-modal") && isOpen){
-    modal.classList.remove("animate__flipInX")
-    modal.classList.add("animate__flipOutX")
-    setTimeout(function(){
-      modal.style.display = "none"
-    },1000)
-    isOpen = false
-  }
-  if(event.target.classList.contains("favourite")){
-    modal.style.display = "flex"
-    modal.classList.add("animate__flipInX")
-    modal.classList.remove("animate__flipOutX")
-    isOpen = true
-  }
-})
+// window.addEventListener("click", (event)=>{
+//   if(!event.target.closest(".favourite-modal") && isOpen){
+//     modal.classList.remove("animate__flipInX")
+//     modal.classList.add("animate__flipOutX")
+//     setTimeout(function(){
+//       modal.style.display = "none"
+//     },1000)
+//     isOpen = false
+//   }
+//   if(event.target.classList.contains("favourite")){
+//     modal.style.display = "flex"
+//     modal.classList.add("animate__flipInX")
+//     modal.classList.remove("animate__flipOutX")
+//     isOpen = true
+//   }
+// })
+
+document.addEventListener('DOMContentLoaded', function() {
+  let elems = document.querySelectorAll('.dropdown-trigger');
+  let instances = M.Dropdown.init(elems, {
+    closeOnClick:false,
+    onOpenStart:()=>{
+      modal.classList.add("animate__flipInX")
+      modal.classList.remove("animate__flipOutX")
+    },
+    onCloseStart:()=>{
+      modal.classList.remove("animate__flipInX")
+      modal.classList.add("animate__flipOutX")
+    },
+    inDuration:1000,
+    outDuration:1000
+  });
+});
