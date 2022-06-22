@@ -169,3 +169,14 @@ input[type=text]:not(.browser-default):focus:not([readonly])+label{
 .material-icons:hover{
     color: red;
 }
+.card-action img{
+    cursor: pointer;
+}
+.card-action{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.material-tooltip{
+    background-color: #E74C3C;
+}

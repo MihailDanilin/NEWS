@@ -81,6 +81,8 @@ function renderNews(news) {
   });
 
   newsCont.insertAdjacentHTML("afterbegin", fragment);
+  let tooltipped = document.querySelectorAll('.tooltipped');
+  let instances = M.Tooltip.init(tooltipped);
 }
 function newsTemplate({urlToImage, title, description, url}) {
   //Создание шаблона новости
@@ -97,6 +99,7 @@ function newsTemplate({urlToImage, title, description, url}) {
     </div>
     <div class="card-action">
       <a target="_blank" href="${url}">Learn more</a>
+      <img class="tooltipped" data-position="left" data-tooltip="Add to favourite" src="favourite.png" alt="">
     </div>
   </div>
 </div>`;
