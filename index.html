@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="shortcut icon" href="news.png" type="image/png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NEWSPAPER</title>
+  </head>
+  <body>
+    <div class="header deep-purple lighten-2">
+      <h1>NEWSPAPER</h1>
+      <p>created by Web-Mihalich and Arturio26</p>
+    </div>
+    <div class="from-bottom favourite">Favourite</div>
+    <div class="favourite-modal animate__animated"></div>
+    <div class="row form-cont">
+      <div class="col s12 m12 l8">
+        <div class="card card-form">
+          <div class="card-content">
+            <span class="card-title">Find news</span>
+            <div class="row">
+              <form class="col s12" name="news-finder">
+                <div class="input-field col s12">
+                  <select name="country">
+                    <option class="deep-purple-text text-lighten-2" value="ru">
+                      Russia
+                    </option>
+                    <option value="us">USA</option>
+                    <option value="de">Germany</option>
+                  </select>
+                  <label>Choose country</label>
+                </div>
+                <div class="input-field col s12">
+                  <select name="category">
+                    <option value="technology">Technology</option>
+                    <option value="business">Bussines</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="general">General</option>
+                    <option value="health">Health</option>
+                    <option value="science">Science</option>
+                    <option value="sports">Sports</option>
+                  </select>
+                  <label>Choose category</label>
+                </div>
+                <div class="input-field col s12">
+                  <input
+                    placeholder="Example: Technology"
+                    id="first_name"
+                    type="text"
+                    class="validate"
+                    name="search"
+                  />
+                  <label for="first_name">Input search request</label>
+                </div>
+
+                <button
+                  class="btn waves-effect waves-light btn-large deep-purple lighten-2"
+                  type="submit"
+                  name="action"
+                >
+                  Submit
+                  <i class="material-icons right">send</i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row grid"></div>
+    <script src="app.js" type="module"></script>
+    <script src="api.js" type="module"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  </body>
+</html>

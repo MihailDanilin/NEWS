@@ -1,0 +1,139 @@
+:root{
+    --inv: #7e57c2;
+    --def: white;
+}
+
+*:before, *:after {
+    box-sizing: border-box;
+  }
+body{
+    margin: 0;
+}
+.header{
+    color: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.header h1{
+    margin:0;
+    font-size: 25px;
+}
+.card-form{
+    margin: 50px 80px;
+}
+.dropdown-content li>a, .dropdown-content li>span {
+    color: #7e57c2 ;
+}
+.dropdown-content{
+    top: -10px;
+}
+.select-wrapper input.select-dropdown:focus {
+    border-bottom: 1px solid #7e57c2;
+}
+input.valid[type=text]:not(.browser-default), 
+input.valid[type=text]:not(.browser-default):focus, 
+input[type=text]:not(.browser-default):focus:not([readonly]){
+    border-bottom: 1px solid #7e57c2;
+    box-shadow: 0 1px 0 0 #7e57c2;
+}
+input[type=text]:not(.browser-default):focus:not([readonly])+label{
+    color: #7e57c2;
+}
+.grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.card-action a{
+    color: #441f83 !important;
+}
+.preloader-wrapper{
+    margin: 0 auto;
+    display: block;
+}
+.custom-toast{
+    background: #7e57c2;
+    color: white;
+}
+.favourite{
+    font-size: 25px;
+    /* border-radius: 50px; */
+    padding: 10px 20px;
+    border: 0;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    position: fixed;
+    right: 20px;
+    top: 60px;
+    z-index: 666777888;
+    /* background: #7e57c2; */
+    box-sizing: border-box;
+    transition: all 500ms cubic-bezier(0.77, 0, 0.175, 1);  
+}
+.favourite p{
+    margin: 0;
+}
+
+@media screen and (max-width:764px){
+    .card-form{
+        margin: 30px 0;
+    }
+    .grid{
+        grid-template-columns: 1fr;
+    }
+}
+
+.favourite:before, .favourite:after {
+    content: '';
+    position: absolute; 
+    transition: inherit;
+    z-index: -1;
+  }
+  
+  .favourite:hover {
+    color: var(--def);
+    transition-delay: .5s;
+  }
+  
+  .favourite:hover:before {
+    transition-delay: 0s;
+  }
+  
+  .favourite:hover:after {
+    background: var(--inv);
+    transition-delay: .35s;
+  }
+.from-bottom:before, 
+.from-bottom:after {
+  left: 0;
+  height: 0;
+  width: 100%;
+}
+
+.from-bottom:before {
+  top: 0; 
+  border: 1px solid var(--inv);
+  border-top: 0;
+  border-bottom: 0;
+}
+
+.from-bottom:after {
+  bottom: 0;
+  height: 0;
+}
+
+.from-bottom:hover:before,
+.from-bottom:hover:after {
+  height: 100%;
+}
+
+.favourite-modal{
+    width: 200px;
+    height: 300px;
+    background: rgb(255, 255, 255);
+    box-shadow: rgba(1, 4, 9, 0.2) 0px 8px 24px 0px;
+    position: fixed;
+    right: 166px;
+    top: 125px;
+    display: none;
+}
