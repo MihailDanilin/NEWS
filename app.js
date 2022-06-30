@@ -7,10 +7,8 @@ let isOpen = false
 
 document.addEventListener("DOMContentLoaded", ()=>{//Инициализация селекта
   let elems = document.querySelectorAll("select");
-  let options1 = elems[0].querySelectorAll("option");
-  let options2 = elems[1].querySelectorAll("option");
-  let instances1 = M.FormSelect.init(elems[0], options1);
-  let instances2 = M.FormSelect.init(elems[1], options2);
+  let instances1 = M.FormSelect.init(elems[0]);
+  let instances2 = M.FormSelect.init(elems[1]);
 });
 
 let http = myHTTP(); //Создание сервиса для обращения к API
@@ -48,8 +46,13 @@ form.addEventListener("submit", (event) => {
   loadNews();
 });
 function loadNews() {
-  //Функция отправки запроса по пользовательским параметром.
+  //Функция отправки запроса по пользовательским параметрам.
   newsCont.innerHTML = "";
+  if(document.querySelectorAll(".material-tooltip").length){
+    document.querySelectorAll(".material-tooltip").forEach((e)=>{
+      e.remove()
+    })
+  }
   showPreloader();
   if (input.value) {
     newsService.everything(input.value, onGetResponse);
@@ -75,8 +78,8 @@ function onGetResponse(err, res) {
 function renderNews(news) {
   //Рендер новостей
   let fragment = "";
-  news.forEach((e) => {
-    let newsElem = newsTemplate(e);
+  news.forEach((e,i) => {
+    let newsElem = newsTemplate(e,i);
     fragment += newsElem;
   });
 
@@ -84,12 +87,12 @@ function renderNews(news) {
   let tooltipped = document.querySelectorAll('.tooltipped');
   let instances = M.Tooltip.init(tooltipped);
 }
-function newsTemplate({urlToImage, title, description, url}) {
+function newsTemplate({urlToImage, title, description, url}, i) {
   //Создание шаблона новости
   return `<div class="col s12">
   <div class="card">
     <div class="card-image">
-      <img src="${urlToImage || "news.jpg"}" />
+      <img src="${urlToImage || "news.jpg"}" alt="Access is prohibited"/>
     </div>
     <div class="card-content">
      <span class="card-title">${title || "News"}</span>
@@ -99,7 +102,8 @@ function newsTemplate({urlToImage, title, description, url}) {
     </div>
     <div class="card-action">
       <a target="_blank" href="${url}">Learn more</a>
-      <img class="tooltipped" data-position="left" data-tooltip="Add to favourite" src="favourite.png" alt="">
+      <img class="tooltipped add" data-position="left" data-number="${i}" data-tooltip="Add to favourite" src="favourite.png" alt="">
+      <img class="added"src="added.png" alt="">
     </div>
   </div>
 </div>`;
@@ -168,3 +172,15 @@ document.addEventListener('DOMContentLoaded', function() {
     outDuration:1000,
   });
 });
+
+document.addEventListener("click", (event)=>{
+  if(!event.target.classList.contains("add")){
+    return
+  }
+  let addElement = event.target.parentElement.lastElementChild
+  let number = event.target.dataset.number
+  event.target.remove()
+  document.querySelectorAll(".material-tooltip")[number].style.display = "none"
+  addElement.style.display = "inline-block"
+})
+// #2ECC71

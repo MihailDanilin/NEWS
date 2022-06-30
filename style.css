@@ -166,11 +166,13 @@ input[type=text]:not(.browser-default):focus:not([readonly])+label{
     transition: 0.7s;
     
 }
-.material-icons:hover{
+.delete:hover{
     color: red;
 }
 .card-action img{
     cursor: pointer;
+    height: 30px;
+    width: 30px;
 }
 .card-action{
     display: flex;
@@ -179,4 +181,8 @@ input[type=text]:not(.browser-default):focus:not([readonly])+label{
 }
 .material-tooltip{
     background-color: #E74C3C;
+    animation-duration: 0.2s;
+}
+.added{
+    display: none;
 }
