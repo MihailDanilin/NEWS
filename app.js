@@ -200,4 +200,10 @@ function favouriteCardTemplate({header, link}){
   <i class="material-icons delete">delete</i>
 </div>`
 }
+
+modal.addEventListener("click", (event)=>{
+  if(event.target.classList.contains("delete")){
+    event.target.closest(".favourite-item").remove()
+  }  
+})
 // #2ECC71
