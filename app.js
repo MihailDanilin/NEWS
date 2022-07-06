@@ -180,11 +180,24 @@ document.addEventListener("click", (event)=>{
   let addElement = event.target.parentElement.lastElementChild
   let number = event.target.dataset.number
   let currentCard = event.target.closest(".card")
-  event.target.remove()
+
   let obj = {
     header:currentCard.querySelector(".card-title").textContent,
     link:currentCard.querySelector("a").href
   }
+  let favouriteHeader = document.querySelectorAll(".favourite-header")
+  let headers = []
+  favouriteHeader.forEach(e => {
+    headers.push(e.textContent)
+  })
+  let isAdded = headers.some(el => {
+    return el == obj.header
+  })
+  if(isAdded){
+    alert("This news has already been added")
+    return
+  }
+  event.target.remove()
   renderFavouriteCard(obj)
   document.querySelectorAll(".material-tooltip")[number].style.display = "none"
   addElement.style.display = "inline-block"
@@ -195,7 +208,7 @@ function renderFavouriteCard(obj){
 }
 function favouriteCardTemplate({header, link}){
   return `<div class="favourite-item">
-  <h3>${header}</h3>
+  <h3 class="favourite-header">${header}</h3>
   <a target="_blank" href="${link}">LEARN MORE</a>
   <i class="material-icons delete">delete</i>
 </div>`
@@ -203,7 +216,10 @@ function favouriteCardTemplate({header, link}){
 
 modal.addEventListener("click", (event)=>{
   if(event.target.classList.contains("delete")){
-    event.target.closest(".favourite-item").remove()
+    if(confirm("Do you really want to delete the news?")){
+      event.target.closest(".favourite-item").remove()
+    }
+
   }  
 })
 // #2ECC71
