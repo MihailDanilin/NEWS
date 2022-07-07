@@ -4,6 +4,8 @@ let newsCont = document.querySelector(".grid");
 let favourite = document.querySelector(".favourite")
 let modal = document.querySelector(".modal-content")
 let isOpen = false
+let indicator = document.querySelector(".news-indicator")
+let newsNum = 0
 
 document.addEventListener("DOMContentLoaded", ()=>{//Инициализация селекта
   let elems = document.querySelectorAll("select");
@@ -193,6 +195,7 @@ document.addEventListener("click", (event)=>{
 function renderFavouriteCard(obj){
   modal.insertAdjacentHTML("afterbegin", favouriteCardTemplate(obj))
   checkFavouriteNews()
+  changeIndicatorValue(true)
 }
 function favouriteCardTemplate({header, link}){
   return `<div class="favourite-item">
@@ -207,6 +210,7 @@ modal.addEventListener("click", (event)=>{
     if(confirm("Do you really want to delete the news?")){
       event.target.closest(".favourite-item").remove()
       checkFavouriteNews()
+      changeIndicatorValue(false)
     }
 
   }  
@@ -216,8 +220,20 @@ modal.addEventListener("click", (event)=>{
 function checkFavouriteNews(){
   if(!modal.children.length){
     modal.insertAdjacentHTML("afterbegin", `<p class="nothing">There are not favourite news</p>`)
+    indicator.style.display = "none"
+    return
   }
-  else{
+  if(document.querySelector(".nothing")){
     document.querySelector(".nothing").remove()
   }
+  indicator.style.display = "flex"
+}
+function changeIndicatorValue(increase){
+  if(increase){
+    newsNum+=1
+  }
+  else{
+    newsNum-=1
+  }
+  indicator.textContent = newsNum
 }
