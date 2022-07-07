@@ -177,3 +177,18 @@ input[type=text]:not(.browser-default):focus:not([readonly])+label{
     font-size: 25px;
     margin: 0;
 }
+.news-indicator{
+    width: 20px;
+    height: 20px;
+    background: #E74C3C;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    right: 15px;
+    top: 55px;
+    z-index: 1000;
+    font-size: 12px;
+}
