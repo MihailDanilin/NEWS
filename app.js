@@ -2,14 +2,18 @@ import { myHTTP } from "./api.js";
 
 let newsCont = document.querySelector(".grid");
 let favourite = document.querySelector(".favourite")
-let modal = document.querySelector(".favourite-modal")
+let modal = document.querySelector(".modal-content")
 let isOpen = false
 
 document.addEventListener("DOMContentLoaded", ()=>{//Инициализация селекта
   let elems = document.querySelectorAll("select");
   let instances1 = M.FormSelect.init(elems[0]);
   let instances2 = M.FormSelect.init(elems[1]);
+  let modal = document.querySelectorAll('.modal');
+  let instances = M.Modal.init(modal);
+  checkFavouriteNews()
 });
+
 
 let http = myHTTP(); //Создание сервиса для обращения к API
 let service = () => {
@@ -156,23 +160,6 @@ function showAlert(err) {
 //   }
 // })
 
-document.addEventListener('DOMContentLoaded', function() {
-  let elems = document.querySelectorAll('.dropdown-trigger');
-  let instances = M.Dropdown.init(elems, {
-    closeOnClick:false,
-    onOpenStart:()=>{
-      modal.classList.add("animate__flipInX")
-      modal.classList.remove("animate__flipOutX")
-    },
-    onCloseStart:()=>{
-      modal.classList.remove("animate__flipInX")
-      modal.classList.add("animate__flipOutX")
-    },
-    inDuration:1000,
-    outDuration:1000,
-  });
-});
-
 document.addEventListener("click", (event)=>{
   if(!event.target.classList.contains("add")){
     return
@@ -205,6 +192,7 @@ document.addEventListener("click", (event)=>{
 })
 function renderFavouriteCard(obj){
   modal.insertAdjacentHTML("afterbegin", favouriteCardTemplate(obj))
+  checkFavouriteNews()
 }
 function favouriteCardTemplate({header, link}){
   return `<div class="favourite-item">
@@ -218,8 +206,18 @@ modal.addEventListener("click", (event)=>{
   if(event.target.classList.contains("delete")){
     if(confirm("Do you really want to delete the news?")){
       event.target.closest(".favourite-item").remove()
+      checkFavouriteNews()
     }
 
   }  
 })
 // #2ECC71
+
+function checkFavouriteNews(){
+  if(!modal.children.length){
+    modal.insertAdjacentHTML("afterbegin", `<p class="nothing">There are not favourite news</p>`)
+  }
+  else{
+    document.querySelector(".nothing").remove()
+  }
+}
