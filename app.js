@@ -11,8 +11,17 @@ document.addEventListener("DOMContentLoaded", ()=>{//Инициализация 
   let elems = document.querySelectorAll("select");
   let instances1 = M.FormSelect.init(elems[0]);
   let instances2 = M.FormSelect.init(elems[1]);
-  let modal = document.querySelectorAll('.modal');
-  let instances = M.Modal.init(modal);
+  let popUp = document.querySelector('.modal');
+  let instances = M.Modal.init(popUp);
+  let newArray = JSON.parse(localStorage.getItem("favourite"))
+  if(newArray){
+    newArray.forEach((e)=>{
+      modal.insertAdjacentHTML("afterbegin", favouriteCardTemplate(e))
+    })
+    indicator.style.display = "flex"
+    indicator.textContent = newArray.length
+    newsNum = newArray.length
+  }
   checkFavouriteNews()
 });
 
@@ -194,6 +203,7 @@ document.addEventListener("click", (event)=>{
 })
 function renderFavouriteCard(obj){
   modal.insertAdjacentHTML("afterbegin", favouriteCardTemplate(obj))
+  setStorage(obj, true)
   checkFavouriteNews()
   changeIndicatorValue(true)
 }
@@ -208,9 +218,16 @@ function favouriteCardTemplate({header, link}){
 modal.addEventListener("click", (event)=>{
   if(event.target.classList.contains("delete")){
     if(confirm("Do you really want to delete the news?")){
+      let favouriteNews = event.target.closest(".favourite-item")
+      let obj = {
+        header:favouriteNews.querySelector(".favourite-header").textContent,
+        link:favouriteNews.querySelector("a").href
+      }
+      setStorage(obj, false)
       event.target.closest(".favourite-item").remove()
       checkFavouriteNews()
       changeIndicatorValue(false)
+
     }
 
   }  
@@ -236,4 +253,29 @@ function changeIndicatorValue(increase){
     newsNum-=1
   }
   indicator.textContent = newsNum
+}
+function setStorage(obj, add){
+  if(add){
+    if(!localStorage.getItem("favourite")){
+      localStorage.setItem("favourite", JSON.stringify([obj]))
+    }
+    else{
+      let newArray = JSON.parse(localStorage.getItem("favourite"))
+      newArray.push(obj)
+      localStorage.setItem("favourite", JSON.stringify(newArray))
+    }
+  }
+  else{
+    let newArray = JSON.parse(localStorage.getItem("favourite"))
+    if(newArray.length == 1){
+      localStorage.removeItem("favourite")
+    }
+
+    else{
+      let deletedArray = newArray.filter((e)=>{
+        return e.header !== obj.header
+      })
+      localStorage.setItem("favourite", JSON.stringify(deletedArray))
+    }
+  }
 }
