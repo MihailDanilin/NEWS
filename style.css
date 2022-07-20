@@ -183,7 +183,7 @@ input[type=text]:not(.browser-default):focus:not([readonly])+label{
     background: #E74C3C;
     border-radius: 50%;
     color: white;
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     position: absolute;

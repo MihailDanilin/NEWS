@@ -1,30 +1,85 @@
 import { myHTTP } from "./api.js";
 
 let newsCont = document.querySelector(".grid");
-let favourite = document.querySelector(".favourite")
-let modal = document.querySelector(".modal-content")
-let isOpen = false
-let indicator = document.querySelector(".news-indicator")
-let newsNum = 0
+let modal = document.querySelector(".modal-content");
+let indicator = document.querySelector(".news-indicator");
+let newsNum = 0; //кол-во избранных новостей
+let form = document.forms["news-finder"];
+let countrySelect = form.elements["country"];
+let category = form.elements["category"];
+let input = form.elements["search"];
 
-document.addEventListener("DOMContentLoaded", ()=>{//Инициализация селекта
-  let elems = document.querySelectorAll("select");
-  let instances1 = M.FormSelect.init(elems[0]);
-  let instances2 = M.FormSelect.init(elems[1]);
-  let popUp = document.querySelector('.modal');
-  let instances = M.Modal.init(popUp);
-  let newArray = JSON.parse(localStorage.getItem("favourite"))
-  if(newArray){
-    newArray.forEach((e)=>{
-      modal.insertAdjacentHTML("afterbegin", favouriteCardTemplate(e))
-    })
-    indicator.style.display = "flex"
-    indicator.textContent = newArray.length
-    newsNum = newArray.length
-  }
-  checkFavouriteNews()
+//событие загрузки HTML
+document.addEventListener("DOMContentLoaded", () => {
+  //Инициализация компонентов Materialize
+  let selects = document.querySelectorAll("select");
+  let popUp = document.querySelector(".modal");
+  M.FormSelect.init(selects[0]);
+  M.FormSelect.init(selects[1]);
+  M.Modal.init(popUp);
+  loadFavouriteNews();
+  checkFavouriteNews();
 });
 
+//удаление избранной новости
+modal.addEventListener("click", (event) => {
+  if (event.target.classList.contains("delete")) {
+    if (confirm("Do you really want to delete the news?")) {
+      let favouriteNews = event.target.closest(".favourite-item");
+      let obj = {
+        header: favouriteNews.querySelector(".favourite-header").textContent,
+        link: favouriteNews.querySelector("a").href,
+      };
+      setStorage(obj, false);
+      event.target.closest(".favourite-item").remove();
+      checkFavouriteNews();
+      changeIndicatorValue(false);
+    }
+  }
+});
+
+//Отправка формы
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  loadNews();
+});
+//Добавление избранной новости
+document.addEventListener("click", (event) => {
+  //Проверка на клик по кнопке добавить в избранное
+  if (!event.target.classList.contains("add")) {
+    return;
+  }
+  let addElement = event.target.parentElement.lastElementChild;
+  let number = event.target.dataset.number;
+  let currentCard = event.target.closest(".card");
+  //Объект избранной новости
+  let obj = {
+    header: currentCard.querySelector(".card-title").textContent,
+    link: currentCard.querySelector("a").href,
+  };
+  if (checkAddedNews(obj.header)) {
+    alert("This news has already been added");
+    return;
+  }
+  //удаление кнопки добавить, успешное добавление
+  event.target.remove();
+  renderFavouriteCard(obj);
+  document.querySelectorAll(".material-tooltip")[number].style.display = "none";
+  addElement.style.display = "inline-block";
+});
+
+//Рендер избранных новостей из хранилища
+function loadFavouriteNews() {
+  let newArray = JSON.parse(localStorage.getItem("favourite"));
+  if (newArray) {
+    newArray.forEach((e) => {
+      modal.insertAdjacentHTML("afterbegin", favouriteCardTemplate(e));
+    });
+    indicator.style.display = "flex";
+    indicator.textContent = newArray.length;
+    newsNum = newArray.length;
+  }
+}
 
 let http = myHTTP(); //Создание сервиса для обращения к API
 let service = () => {
@@ -36,37 +91,27 @@ let service = () => {
     },
     topHeadlines(country = "ru", category, cb) {
       category
-      ?
-      http.get(
-        `${baseURL}/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}`,
-        cb
-      )
-      :
-      http.get(
-        `${baseURL}/top-headlines?country=${country}&apiKey=${apiKey}`,
-        cb
-      );
+        ? http.get(
+            `${baseURL}/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}`,
+            cb
+          )
+        : http.get(
+            `${baseURL}/top-headlines?country=${country}&apiKey=${apiKey}`,
+            cb
+          );
     },
   };
 };
-let newsService = service();
-let form = document.forms["news-finder"];
-let countrySelect = form.elements["country"];
-let category = form.elements["category"];
-let input = form.elements["search"];
 
-form.addEventListener("submit", (event) => {
-  //Отправка формы
-  event.preventDefault();
-  loadNews();
-});
+let newsService = service();
+
+//Функция отправки запроса по пользовательским параметрам.
 function loadNews() {
-  //Функция отправки запроса по пользовательским параметрам.
   newsCont.innerHTML = "";
-  if(document.querySelectorAll(".material-tooltip").length){
-    document.querySelectorAll(".material-tooltip").forEach((e)=>{
-      e.remove()
-    })
+  if (document.querySelectorAll(".material-tooltip").length) {
+    document.querySelectorAll(".material-tooltip").forEach((e) => {
+      e.remove();
+    });
   }
   showPreloader();
   if (input.value) {
@@ -76,8 +121,8 @@ function loadNews() {
   newsService.topHeadlines(countrySelect.value, category.value, onGetResponse);
 }
 
+//Обработка ответа от сервера
 function onGetResponse(err, res) {
-  //Обработка ответа от сервера
   removePreloader();
   if (err) {
     showAlert(err);
@@ -90,20 +135,25 @@ function onGetResponse(err, res) {
   }
   renderNews(res.articles);
 }
+
+//Рендер новостей
 function renderNews(news) {
-  //Рендер новостей
   let fragment = "";
-  news.forEach((e,i) => {
-    let newsElem = newsTemplate(e,i);
+  news.forEach((e, i) => {
+    let newsElem = newsTemplate(e, i);
     fragment += newsElem;
   });
-
   newsCont.insertAdjacentHTML("afterbegin", fragment);
-  let tooltipped = document.querySelectorAll('.tooltipped');
-  let instances = M.Tooltip.init(tooltipped);
+  tooltipInit();
 }
-function newsTemplate({urlToImage, title, description, url}, i) {
-  //Создание шаблона новости
+//инициализация tooltip'ов
+function tooltipInit() {
+  let tooltipped = document.querySelectorAll(".tooltipped");
+  M.Tooltip.init(tooltipped);
+}
+
+//Создание шаблона новости
+function newsTemplate({ urlToImage, title, description, url }, i) {
   return `<div class="col s12">
   <div class="card">
     <div class="card-image">
@@ -123,8 +173,8 @@ function newsTemplate({urlToImage, title, description, url}, i) {
   </div>
 </div>`;
 }
+//Рендер прелоадера
 function showPreloader() {
-  //Рендер прелоадера
   document.querySelector(".form-cont").insertAdjacentHTML(
     "afterend",
     `  <div class="preloader-wrapper big active">
@@ -140,142 +190,85 @@ function showPreloader() {
   </div>`
   );
 }
+//Удаление прелоадера
 function removePreloader() {
-  //Удаление прелоадера
   document.querySelector(".preloader-wrapper").remove();
 }
+//Рендер окна ошибки
 function showAlert(err) {
-  //Рендер окна ошибки
   M.toast({ html: err, classes: "custom-toast" });
 }
 
-// favourite.addEventListener("click", openFavouriteModal)
-// function openFavouriteModal(){
-//   modal.style.display = "flex"
-//   isOpen = true
-// }
-// window.addEventListener("click", (event)=>{
-//   if(!event.target.closest(".favourite-modal") && isOpen){
-//     modal.classList.remove("animate__flipInX")
-//     modal.classList.add("animate__flipOutX")
-//     setTimeout(function(){
-//       modal.style.display = "none"
-//     },1000)
-//     isOpen = false
-//   }
-//   if(event.target.classList.contains("favourite")){
-//     modal.style.display = "flex"
-//     modal.classList.add("animate__flipInX")
-//     modal.classList.remove("animate__flipOutX")
-//     isOpen = true
-//   }
-// })
-
-document.addEventListener("click", (event)=>{
-  if(!event.target.classList.contains("add")){
-    return
-  }
-  let addElement = event.target.parentElement.lastElementChild
-  let number = event.target.dataset.number
-  let currentCard = event.target.closest(".card")
-
-  let obj = {
-    header:currentCard.querySelector(".card-title").textContent,
-    link:currentCard.querySelector("a").href
-  }
-  let favouriteHeader = document.querySelectorAll(".favourite-header")
-  let headers = []
-  favouriteHeader.forEach(e => {
-    headers.push(e.textContent)
-  })
-  let isAdded = headers.some(el => {
-    return el == obj.header
-  })
-  if(isAdded){
-    alert("This news has already been added")
-    return
-  }
-  event.target.remove()
-  renderFavouriteCard(obj)
-  document.querySelectorAll(".material-tooltip")[number].style.display = "none"
-  addElement.style.display = "inline-block"
-
-})
-function renderFavouriteCard(obj){
-  modal.insertAdjacentHTML("afterbegin", favouriteCardTemplate(obj))
-  setStorage(obj, true)
-  checkFavouriteNews()
-  changeIndicatorValue(true)
+//Проверяет повторное добавление новости в избранное
+function checkAddedNews(header) {
+  let favouriteHeader = document.querySelectorAll(".favourite-header");
+  let headers = [];
+  favouriteHeader.forEach((e) => {
+    headers.push(e.textContent);
+  });
+  return headers.some((el) => {
+    return el == header;
+  });
 }
-function favouriteCardTemplate({header, link}){
+//рендер избранных новостей, добавление в хранилище
+function renderFavouriteCard(obj) {
+  modal.insertAdjacentHTML("afterbegin", favouriteCardTemplate(obj));
+  setStorage(obj, true);
+  checkFavouriteNews();
+  changeIndicatorValue(true);
+}
+//шаблон избранных новостей
+function favouriteCardTemplate({ header, link }) {
   return `<div class="favourite-item">
   <h3 class="favourite-header">${header}</h3>
   <a target="_blank" href="${link}">LEARN MORE</a>
   <i class="material-icons delete">delete</i>
-</div>`
+</div>`;
+}
+//проверка на количество изб новостей
+function checkFavouriteNews() {
+  if (!modal.children.length) {
+    modal.insertAdjacentHTML(
+      "afterbegin",
+      `<p class="nothing">There are not favourite news</p>`
+    );
+    indicator.style.display = "none";
+    return;
+  }
+  if (document.querySelector(".nothing")) {
+    document.querySelector(".nothing").remove();
+  }
+  indicator.style.display = "flex";
+}
+//изменение значения индикатора
+function changeIndicatorValue(increase) {
+  if (increase) {
+    newsNum += 1;
+  } else {
+    newsNum -= 1;
+  }
+  indicator.textContent = newsNum;
 }
 
-modal.addEventListener("click", (event)=>{
-  if(event.target.classList.contains("delete")){
-    if(confirm("Do you really want to delete the news?")){
-      let favouriteNews = event.target.closest(".favourite-item")
-      let obj = {
-        header:favouriteNews.querySelector(".favourite-header").textContent,
-        link:favouriteNews.querySelector("a").href
-      }
-      setStorage(obj, false)
-      event.target.closest(".favourite-item").remove()
-      checkFavouriteNews()
-      changeIndicatorValue(false)
-
+//добавление и удаление избранных новостей в хранилище
+function setStorage(obj, add) {
+  if (add) {
+    if (!localStorage.getItem("favourite")) {
+      localStorage.setItem("favourite", JSON.stringify([obj]));
+    } else {
+      let newArray = JSON.parse(localStorage.getItem("favourite"));
+      newArray.push(obj);
+      localStorage.setItem("favourite", JSON.stringify(newArray));
     }
-
-  }  
-})
-// #2ECC71
-
-function checkFavouriteNews(){
-  if(!modal.children.length){
-    modal.insertAdjacentHTML("afterbegin", `<p class="nothing">There are not favourite news</p>`)
-    indicator.style.display = "none"
-    return
-  }
-  if(document.querySelector(".nothing")){
-    document.querySelector(".nothing").remove()
-  }
-  indicator.style.display = "flex"
-}
-function changeIndicatorValue(increase){
-  if(increase){
-    newsNum+=1
-  }
-  else{
-    newsNum-=1
-  }
-  indicator.textContent = newsNum
-}
-function setStorage(obj, add){
-  if(add){
-    if(!localStorage.getItem("favourite")){
-      localStorage.setItem("favourite", JSON.stringify([obj]))
-    }
-    else{
-      let newArray = JSON.parse(localStorage.getItem("favourite"))
-      newArray.push(obj)
-      localStorage.setItem("favourite", JSON.stringify(newArray))
-    }
-  }
-  else{
-    let newArray = JSON.parse(localStorage.getItem("favourite"))
-    if(newArray.length == 1){
-      localStorage.removeItem("favourite")
-    }
-
-    else{
-      let deletedArray = newArray.filter((e)=>{
-        return e.header !== obj.header
-      })
-      localStorage.setItem("favourite", JSON.stringify(deletedArray))
+  } else {
+    let newArray = JSON.parse(localStorage.getItem("favourite"));
+    if (newArray.length == 1) {
+      localStorage.removeItem("favourite");
+    } else {
+      let deletedArray = newArray.filter((e) => {
+        return e.header !== obj.header;
+      });
+      localStorage.setItem("favourite", JSON.stringify(deletedArray));
     }
   }
 }
